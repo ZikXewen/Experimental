@@ -44,8 +44,11 @@ a:hover{
     color: black;
 }
 
-.center{
+.white{
     color: white;
+}
+
+.center{
     text-align: center;
 }
 
