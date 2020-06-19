@@ -3,16 +3,8 @@
 }
 
 body{
+    margin: 0;
     background-image: url(https://images.wallpaperscraft.com/image/refueling_night_dark_151920_2560x1440.jpg);
-}
-
-a{
-    text-decoration: none;
-}
-
-a:hover{
-    background-color: white;
-    color: black;
 }
 
 h1{
@@ -22,30 +14,39 @@ h1{
 }
 
 ul {
+    display: flex;
+    flex-direction: row;
+    position: sticky;
     list-style-type: none;
     margin: 0;
     padding: 0;
+    top: 0;
+}
+
+li{
+    vertical-align: middle;
+    flex: 1;
+    text-align: center;
+}
+
+a{
+    padding: 0.5em 0;
+    display: inline-block;
+    font-size: larger;
+    font-weight: 500;
+    color: white;
+    width: 100%;
+    text-decoration: none;
+}
+
+a:hover{
+    background-color: white;
+    color: black;
 }
 
 .center{
     color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.flexbox{
-    display: flex;
-    justify-content: center;
-    position: sticky;
-    top: 15px;
-    
-}
-
-.flexitem{
-    width: 150px;
-    margin: 10px;
-    /*border: 3px solid #333;*/
+    text-align: center;
 }
 
 .height{
@@ -55,9 +56,6 @@ ul {
 }
 
 .btn{
-    font-size: larger;
-    font-weight: 500;
-    color: white;
     border: none;
     background-color: rgba(0, 0, 0, 0);
 }
