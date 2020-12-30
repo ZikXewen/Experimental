@@ -1,3 +1,5 @@
+//variables
+
 const bob = "hey I'm bob";
 console.log(bob);
 
@@ -19,7 +21,10 @@ console.log(obj);
 obj2.z = 123;
 console.log(obj2.z);
 
+//func
+
 type Addfunc = (x: number, y: number) => number;
 const add: Addfunc = (x: number, y: number) => x + y;
+const add2 = (nums: {a: number, b: number}) => nums.a + nums.b;
 
 console.log(add(21, obj.x));
