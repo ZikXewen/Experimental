@@ -28,3 +28,38 @@ const add: Addfunc = (x: number, y: number) => x + y;
 const add2 = (nums: {a: number, b: number}) => nums.a + nums.b;
 
 console.log(add(21, obj.x));
+
+//union
+
+let maybeNum: number | string = 5;
+maybeNum = "boi";
+
+interface Dog{
+    bark: string;
+}
+interface Cat{
+    purr: string;
+}
+type DogCat = Dog & Cat | number;
+let dogCat: DogCat = {
+    bark: "bark!",
+    purr: "purr!"
+}
+dogCat = 5;
+
+if(typeof dogCat === "string"){
+    console.log("it's a string bro");
+} else {
+    console.log("it ain't no string bro");
+}
+
+//casting
+
+console.log(add(dogCat as number, dogCat as any));
+
+//any
+
+const printf = (x: any) => {
+    console.log(x);
+}
+printf(5);
