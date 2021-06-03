@@ -1,1 +1,4 @@
 TS/main.js
+*.gitignore
+*.env
+*node_modules/
