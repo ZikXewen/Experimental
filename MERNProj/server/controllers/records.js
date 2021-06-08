@@ -1,9 +1,7 @@
 import express from "express";
 import Record from "../models/Record.js";
 import mongoose from "mongoose";
-import { PythonShell } from "python-shell";
-import fs from "fs";
-import { fileSync } from "tmp";
+import axios from "axios";
 
 const router = express.Router();
 
@@ -36,19 +34,13 @@ export const getCC = async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(id))
     res.status(404).send("Record not found");
   const { audioFile } = await Record.findById(id);
-  const tempObj = fileSync({ postfix: ".wav" });
-  fs.writeFileSync(
-    tempObj.name,
-    Buffer.from(audioFile.replace("data:audio/wav;base64,", ""), "base64")
-  );
-  PythonShell.run(
-    "./processing/getCC.py",
-    { args: [tempObj.name] },
-    (err, pyRet) => {
-      if (err) throw err;
-      tempObj.removeCallback();
-      res.status(200).send(pyRet);
-    }
-  );
+  try {
+    const { data } = await axios.post("http://localhost:5001/", {
+      testString: audioFile.replace("data:audio/wav;base64,", ""),
+    });
+    res.status(200).send(data);
+  } catch (error) {
+    res.status(400).send("Get CC Error");
+  }
 };
 export default router;

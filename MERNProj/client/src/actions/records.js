@@ -1,4 +1,10 @@
-import { FETCH_ALL, CREATE, DELETE, GETCC } from "../constants/actionTypes";
+import {
+  FETCH_ALL,
+  CREATE,
+  DELETE,
+  GETCC,
+  LABEL,
+} from "../constants/actionTypes";
 import * as api from "../api";
 
 export const getRecords = () => async (dispatch) => {
@@ -32,4 +38,7 @@ export const getCC = (id) => async (dispatch) => {
   } catch (error) {
     console.log(error);
   }
+};
+export const setLabel = (title) => async (dispatch) => {
+  dispatch({ type: LABEL, payload: title });
 };

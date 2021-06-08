@@ -1,23 +1,56 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { List, ListItem } from "@material-ui/core";
+import { Container, List, ListItem, Typography } from "@material-ui/core";
 import useStyles from "./styles.js";
+import { wordErrorRate } from "word-error-rate";
 const Transcriptions = () => {
   const latestTranscription = useSelector((state) => state.transcription);
   const [transcriptions, setTranscriptions] = useState([]);
   const classes = useStyles();
+  const label = useSelector((state) => state.label);
   useEffect(() => {
     if (latestTranscription)
-      setTranscriptions([latestTranscription, ...transcriptions]);
+      setTranscriptions([
+        {
+          str: latestTranscription,
+          lab: label,
+          wer: (
+            100 -
+            wordErrorRate(
+              latestTranscription.split("").join(" "),
+              label.split("").join(" ")
+            ) *
+              100
+          ).toFixed(2),
+        },
+        ...transcriptions,
+      ]);
+    console.log(latestTranscription);
+    console.log(label);
   }, [latestTranscription]);
   return (
-    <List>
-      {transcriptions.map((transcription) => (
-        <ListItem fullWidth className={classes.listItem} divider={true}>
-          {transcription}
-        </ListItem>
-      ))}
-    </List>
+    <Container className={classes.listBlock}>
+      <Typography
+        variant="h5"
+        gutterBottom
+        align="center"
+        className={classes.listTitle}
+      >
+        Latest Transcriptions
+      </Typography>
+      <List className={classes.list}>
+        {transcriptions.map((transcription) => (
+          <ListItem className={classes.listItem}>
+            <Typography className={classes.listItemLeft}>
+              {transcription.str}
+            </Typography>
+            <Typography className={classes.listItemRight}>
+              {transcription.wer}%
+            </Typography>
+          </ListItem>
+        ))}
+      </List>
+    </Container>
   );
 };
 export default Transcriptions;

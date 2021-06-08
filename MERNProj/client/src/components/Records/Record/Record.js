@@ -5,7 +5,7 @@ import PauseIcon from "@material-ui/icons/Pause";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CCIcon from "@material-ui/icons/ClosedCaption";
 import moment from "moment";
-import { deleteRecord, getCC } from "../../../actions/records";
+import { deleteRecord, getCC, setLabel } from "../../../actions/records";
 import { useDispatch } from "react-redux";
 import useStyles from "./styles";
 const Record = ({ record }) => {
@@ -20,6 +20,7 @@ const Record = ({ record }) => {
   };
   const handleGetCC = () => {
     dispatch(getCC(record._id));
+    dispatch(setLabel(record.title));
   };
   return (
     <Card
