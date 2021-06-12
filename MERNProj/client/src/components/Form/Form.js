@@ -53,13 +53,10 @@ const Form = () => {
       recordData.duration === 0
     )
       return;
-    console.log(recordData);
     dispatch(createRecord(recordData));
     handleClear();
   };
   const handleClear = () => {
-    console.log(recordData);
-    console.log(curTitle);
     setRecordData({ title: "", creator: "", audioFile: "", duration: 0 });
     dispatch(setTitle(""));
   };

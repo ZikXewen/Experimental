@@ -15,15 +15,10 @@ const Navbar = () => {
         Kratua
       </Typography>
       <Toolbar>
-        <Button variant="h6" component={Link} to="/" className={classes.link}>
+        <Button component={Link} to="/" className={classes.link}>
           Collections
         </Button>
-        <Button
-          variant="h6"
-          component={Link}
-          to="/next"
-          className={classes.link}
-        >
+        <Button component={Link} to="/next" className={classes.link}>
           Lessons
         </Button>
       </Toolbar>

@@ -5,6 +5,7 @@ import {
   Grow,
   Card,
   TextField,
+  Slide,
 } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
 import { getRecords } from "../../actions/records";
@@ -21,8 +22,8 @@ const Records = () => {
   return !records.length ? (
     <CircularProgress />
   ) : (
-    <Grow in>
-      <>
+    <>
+      <Grow in>
         <Card className={classes.card}>
           <TextField
             fullWidth
@@ -33,6 +34,8 @@ const Records = () => {
             }}
           ></TextField>
         </Card>
+      </Grow>
+      <Slide direction="up" in>
         <Grid container alignItems="stretch" spacing={3}>
           {records
             .slice()
@@ -48,8 +51,8 @@ const Records = () => {
               </Grid>
             ))}
         </Grid>
-      </>
-    </Grow>
+      </Slide>
+    </>
   );
 };
 export default Records;

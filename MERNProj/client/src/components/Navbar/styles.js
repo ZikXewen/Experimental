@@ -12,6 +12,7 @@ export default makeStyles(() => ({
   },
   link: {
     color: "white",
+    padding: "10px 20px",
   },
   title: {
     color: "white",

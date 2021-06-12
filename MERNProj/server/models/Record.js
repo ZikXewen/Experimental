@@ -4,10 +4,7 @@ const recordSchema = mongoose.Schema({
   creator: String,
   audioFile: String,
   duration: Number,
-  createdAt: {
-    type: Date,
-    default: new Date().toISOString(),
-  },
+  createdAt: Date,
 });
 var Record = mongoose.model("Record", recordSchema);
 export default Record;

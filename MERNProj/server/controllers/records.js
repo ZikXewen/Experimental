@@ -14,7 +14,10 @@ export const getRecords = async (req, res) => {
   }
 };
 export const createRecord = async (req, res) => {
-  const newRecord = new Record(req.body);
+  const newRecord = new Record({
+    ...req.body,
+    createdAt: new Date().toISOString(),
+  });
   try {
     await newRecord.save();
     res.status(201).json(newRecord);

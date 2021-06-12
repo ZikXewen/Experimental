@@ -79,7 +79,7 @@ const Record = ({ record }) => {
           color="primary"
           onClick={handlePlay}
         >
-          {playing ? <PauseIcon /> : <PlayIcon />} Play
+          {playing ? <PauseIcon /> : <PlayIcon />} &nbsp; Play
         </Button>
         <Button
           className={classes.actionButton}
@@ -87,7 +87,7 @@ const Record = ({ record }) => {
           onClick={handleGetCC}
           disabled={gettingCC}
         >
-          <CCIcon /> Subtitle
+          <CCIcon /> &nbsp; Transcribe
         </Button>
       </Collapse>
     </Card>
