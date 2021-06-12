@@ -4,6 +4,7 @@ import {
   DELETE,
   GETCC,
   LABEL,
+  TITLE,
 } from "../constants/actionTypes";
 import * as api from "../api";
 
@@ -41,4 +42,7 @@ export const getCC = (id) => async (dispatch) => {
 };
 export const setLabel = (title) => async (dispatch) => {
   dispatch({ type: LABEL, payload: title });
+};
+export const setTitle = (title) => async (dispatch) => {
+  dispatch({ type: TITLE, payload: title });
 };

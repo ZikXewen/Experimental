@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Typography, Card, TextField } from "@material-ui/core";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import AudioReactRecorder, { RecordState } from "audio-react-recorder";
 import { createRecord } from "../../actions/records";
+import { setTitle } from "../../actions/records";
 import MicIcon from "@material-ui/icons/Mic";
 import StopIcon from "@material-ui/icons/Stop";
 
@@ -18,8 +19,16 @@ const Form = () => {
     audioFile: "",
     duration: 0,
   });
+  const [disableTitle, setDisableTitle] = useState(false);
   const dispatch = useDispatch();
   const classes = useStyles();
+  const curTitle = useSelector((state) => state.title);
+  useEffect(() => {
+    if (curTitle) {
+      setRecordData({ ...recordData, title: curTitle });
+      setDisableTitle(true);
+    } else setDisableTitle(false);
+  }, [curTitle]);
   const handleStop = (audioData) => {
     var reader = new FileReader();
     reader.readAsDataURL(audioData.blob);
@@ -49,7 +58,10 @@ const Form = () => {
     handleClear();
   };
   const handleClear = () => {
+    console.log(recordData);
+    console.log(curTitle);
     setRecordData({ title: "", creator: "", audioFile: "", duration: 0 });
+    dispatch(setTitle(""));
   };
   return (
     <Card
@@ -76,6 +88,7 @@ const Form = () => {
           fullWidth
           className={classes.textField}
           value={recordData.title}
+          InputProps={{ readOnly: disableTitle }}
           onChange={(e) => {
             setRecordData({ ...recordData, title: e.target.value });
           }}

@@ -1,44 +1,40 @@
-import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { getRecords } from "./actions/records.js";
-import { AppBar, Container, Grid, Grow, Typography } from "@material-ui/core";
+import React from "react";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { Container, Grid, Grow } from "@material-ui/core";
+import Next from "./components/Next/Next";
 import Form from "./components/Form/Form";
 import Records from "./components/Records/Records";
 import Transcriptions from "./components/Transcriptions/Transcriptions";
-import useStyles from "./styles";
+import Navbar from "./components/Navbar/Navbar";
 const App = () => {
-  const dispatch = useDispatch();
-  const classes = useStyles();
-  useEffect(() => {
-    dispatch(getRecords());
-  }, [dispatch]);
   return (
-    <Container maxWidth="lg">
-      <AppBar position="static" className={classes.appBar}>
-        <Typography variant="h2" align="center">
-          Recording
-        </Typography>
-      </AppBar>
-      <Grow in>
-        <Container>
-          <Grid
-            container
-            justify="space-between"
-            align-items="stretch"
-            spacing={3}
-          >
-            <Grid item xs={12} sm={7}>
-              <Records />
+    <BrowserRouter>
+      <Container maxWidth="lg">
+        <Navbar />
+        <Grow in>
+          <Container>
+            <Grid
+              container
+              justify="space-between"
+              align-items="stretch"
+              spacing={3}
+            >
+              <Grid item xs={12} sm={8}>
+                <Switch>
+                  <Route path="/" exact component={Records} />
+                  <Route path="/next" exact component={Next} />
+                </Switch>
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <Form />
+                <br />
+                <Transcriptions />
+              </Grid>
             </Grid>
-            <Grid item xs={12} sm={4}>
-              <Form />
-              <br />
-              <Transcriptions />
-            </Grid>
-          </Grid>
-        </Container>
-      </Grow>
-    </Container>
+          </Container>
+        </Grow>
+      </Container>
+    </BrowserRouter>
   );
 };
 export default App;

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Container, List, ListItem, Typography } from "@material-ui/core";
 import useStyles from "./styles.js";
 import { wordErrorRate } from "word-error-rate";
+import { setLabel } from "../../actions/records";
 const Transcriptions = () => {
+  const dispatch = useDispatch();
   const latestTranscription = useSelector((state) => state.transcription);
   const [transcriptions, setTranscriptions] = useState([]);
   const classes = useStyles();
@@ -25,6 +27,7 @@ const Transcriptions = () => {
         },
         ...transcriptions,
       ]);
+    dispatch(setLabel(""));
     console.log(latestTranscription);
     console.log(label);
   }, [latestTranscription]);

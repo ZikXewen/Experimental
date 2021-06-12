@@ -6,6 +6,7 @@ export default makeStyles((theme) => ({
   paper: {
     transition: "all 0.2s ease-out",
     padding: theme.spacing(2),
+    borderRadius: "10px",
   },
   form: {
     display: "flex",

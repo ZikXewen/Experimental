@@ -2,7 +2,7 @@ import { makeStyles } from "@material-ui/core";
 export default makeStyles(() => ({
   listBlock: {
     backgroundColor: "white",
-    borderRadius: "12px",
+    borderRadius: "10px",
     width: "100%",
     justifyContent: "center",
     paddingTop: "15px",
@@ -29,6 +29,8 @@ export default makeStyles(() => ({
     padding: "15px 15px 20px",
     display: "grid",
     rowGap: "8px",
+    maxHeight: "300px",
+    overflow: "auto",
   },
   listTitle: {
     top: "50%",
