@@ -35,7 +35,7 @@ export const getCC = async (req, res) => {
     res.status(404).send("Record not found");
   const { audioFile } = await Record.findById(id);
   try {
-    const { data } = await axios.post("http://localhost:5001/", {
+    const { data } = await axios.post("https://kratua.loca.lt", {
       testString: audioFile.replace("data:audio/wav;base64,", ""),
     });
     res.status(200).send(data);

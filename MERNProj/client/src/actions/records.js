@@ -3,6 +3,7 @@ import {
   CREATE,
   DELETE,
   GETCC,
+  RESETCC,
   LABEL,
   TITLE,
 } from "../constants/actionTypes";
@@ -39,6 +40,9 @@ export const getCC = (id) => async (dispatch) => {
   } catch (error) {
     console.log(error);
   }
+};
+export const resetCC = () => async (dispatch) => {
+  dispatch({ type: RESETCC });
 };
 export const setLabel = (title) => async (dispatch) => {
   dispatch({ type: LABEL, payload: title });

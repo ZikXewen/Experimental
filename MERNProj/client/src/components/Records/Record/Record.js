@@ -24,8 +24,8 @@ const Record = ({ record }) => {
     setPlaying(!playing);
   };
   const handleGetCC = () => {
-    dispatch(getCC(record._id));
     dispatch(setLabel(record.title));
+    dispatch(getCC(record._id));
   };
   return (
     <Card

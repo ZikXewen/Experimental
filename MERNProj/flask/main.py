@@ -14,9 +14,7 @@ tempfile.tempdir = os.path.dirname(os.path.abspath(__file__))
 
 @app.route('/', methods=['GET'])
 def index():
-    return {
-        'name': 'Hello World'
-    }
+    return "Nothing to see here..."
 
 @app.route('/', methods=['POST'])
 def getTranscription():
@@ -26,7 +24,7 @@ def getTranscription():
     tempFile.close()
     
     audio, rate = load(tempFile.name, sr = 16000)
-    input_values = processor(audio, return_tensors="pt").input_values
+    input_values = processor(audio, return_tensors="pt", sampling_rate=16000).input_values
     logits = model(input_values).logits
     prediction = argmax(logits, dim = -1)
     transcription = processor.batch_decode(prediction)[0]

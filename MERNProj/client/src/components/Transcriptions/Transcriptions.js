@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Container, List, ListItem, Typography } from "@material-ui/core";
 import useStyles from "./styles.js";
 import { wordErrorRate } from "word-error-rate";
-import { setLabel } from "../../actions/records";
+import { resetCC, setLabel } from "../../actions/records";
 const Transcriptions = () => {
   const dispatch = useDispatch();
   const latestTranscription = useSelector((state) => state.transcription);
@@ -11,7 +11,7 @@ const Transcriptions = () => {
   const classes = useStyles();
   const label = useSelector((state) => state.label);
   useEffect(() => {
-    if (latestTranscription)
+    if (latestTranscription) {
       setTranscriptions([
         {
           str: latestTranscription,
@@ -27,9 +27,9 @@ const Transcriptions = () => {
         },
         ...transcriptions,
       ]);
-    dispatch(setLabel(""));
-    console.log(latestTranscription);
-    console.log(label);
+      dispatch(resetCC());
+      dispatch(setLabel(""));
+    }
   }, [latestTranscription]);
   return (
     <Container className={classes.listBlock}>

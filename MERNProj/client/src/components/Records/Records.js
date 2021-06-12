@@ -39,7 +39,8 @@ const Records = () => {
             .reverse()
             .filter(
               (record) =>
-                record.creator.includes(term) || record.title.includes(term)
+                record.creator.toLowerCase().includes(term.toLowerCase()) ||
+                record.title.toLowerCase().includes(term.toLowerCase())
             )
             .map((record) => (
               <Grid item key={record._id} xs={12} sm={6} md={6}>

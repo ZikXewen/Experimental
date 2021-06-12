@@ -6,7 +6,9 @@ import Form from "./components/Form/Form";
 import Records from "./components/Records/Records";
 import Transcriptions from "./components/Transcriptions/Transcriptions";
 import Navbar from "./components/Navbar/Navbar";
+import useStyles from "./styles";
 const App = () => {
+  const classes = useStyles();
   return (
     <BrowserRouter>
       <Container maxWidth="lg">
@@ -18,6 +20,7 @@ const App = () => {
               justify="space-between"
               align-items="stretch"
               spacing={3}
+              className={classes.grid}
             >
               <Grid item xs={12} sm={8}>
                 <Switch>

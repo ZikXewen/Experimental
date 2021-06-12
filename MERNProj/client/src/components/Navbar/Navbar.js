@@ -12,7 +12,7 @@ const Navbar = () => {
         align="center"
         className={classes.title}
       >
-        Recording
+        Kratua
       </Typography>
       <Toolbar>
         <Button variant="h6" component={Link} to="/" className={classes.link}>
