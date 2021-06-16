@@ -1,5 +1,5 @@
 import axios from "axios";
-const url = "http://localhost:5000/records";
+const url = "https://kratua-backend.herokuapp.com/records";
 
 export const getRecords = () => axios.get(url);
 export const createRecord = (newRecord) => axios.post(url, newRecord);
