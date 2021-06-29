@@ -7,8 +7,8 @@ import base64
 import os
 app = Flask(__name__)
 
-processor = Wav2Vec2Processor.from_pretrained("sakares/wav2vec2-large-xlsr-thai-demo")
-model = Wav2Vec2ForCTC.from_pretrained("sakares/wav2vec2-large-xlsr-thai-demo")
+processor = Wav2Vec2Processor.from_pretrained("ZikXewen/wav2vec2-large-xlsr-53-thai-demo")
+model = Wav2Vec2ForCTC.from_pretrained("ZikXewen/wav2vec2-large-xlsr-53-thai-demo")
 
 tempfile.tempdir = os.path.dirname(os.path.abspath(__file__))
 
