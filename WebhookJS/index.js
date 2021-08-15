@@ -10,7 +10,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 app.post("/", (req, res) => {
-  console.log(req.body);
+  console.log(req.body?.source?.userId);
   res.status(200).send("OK");
 });
 
