@@ -1,5 +1,6 @@
-import Discord, { MessageEmbed } from "discord.js";
+import Discord from "discord.js";
 import { DisTube } from "distube";
+import { SpotifyPlugin } from "@distube/spotify";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -7,11 +8,13 @@ dotenv.config();
 const commands = {
   help: ["help", "h"],
   play: ["play", "p"],
-  stop: ["stop", "disconnect", "dc"],
+  stop: ["stop", "disconnect", "dc", "st"],
   skip: ["skip", "s"],
   loop: ["repeat", "loop", "l"],
   queue: ["queue", "q"],
   filter: ["filter", "f"],
+  "now playing": ["nowplaying", "now", "np"],
+  "list filter": ["listfilter", "lf", "fl"],
 };
 const prefix = "??";
 const client = new Discord.Client({
@@ -22,6 +25,11 @@ const distube = new DisTube(client, {
   emitNewSongOnly: true,
   leaveOnFinish: true,
   nsfw: true,
+  plugins: [new SpotifyPlugin()],
+});
+
+const toEmbed = (desc, color) => ({
+  embeds: [new Discord.MessageEmbed({ description: desc, color: color })],
 });
 
 client
@@ -35,7 +43,9 @@ client
     const command = args.shift();
     if (commands.play.includes(command)) {
       if (args.length === 0) {
-        message.channel.send("Please Enter URL or Search Terms.");
+        message.channel.send(
+          toEmbed("Please Enter URL or Search Terms.", "RED")
+        );
       }
       try {
         distube.play(message, args.join(" "));
@@ -45,11 +55,13 @@ client
     }
     if (commands.loop.includes(command)) {
       if (!distube.getQueue(message)) {
-        return message.channel.send("Queue Empty!");
+        return message.channel.send(toEmbed("Queue Empty!", "RED"));
       }
       const mode = distube.setRepeatMode(message);
       message.channel.send(
-        "Repeat mode set to " + ["None", "Single", "Queue"][mode]
+        toEmbed(
+          "Repeat mode set to **" + ["None", "Single", "Queue"][mode] + "**"
+        )
       );
     }
     if (commands.stop.includes(command)) {
@@ -57,34 +69,49 @@ client
     }
     if (commands.queue.includes(command)) {
       const queue = distube.getQueue(message);
-      if (!queue) return message.channel.send("Queue Empty!");
-      message.channel.send(
-        "Current Queue:\n" +
-          queue.songs
-            .map(
-              (song, id) =>
-                `${id + 1}: ${song.name} (${song.formattedDuration})`
-            )
-            .join("\n")
-      );
+      if (!queue) return message.channel.send(toEmbed("Queue Empty!", "RED"));
+      message.channel.send({
+        embeds: [
+          new Discord.MessageEmbed({
+            title: "Current Queue",
+            description: queue.songs
+              .map(
+                (song, id) =>
+                  `${id + 1}: [${song.name}](${song.url}) (${
+                    song.formattedDuration
+                  })`
+              )
+              .join("\n")
+              .slice(0, 4000),
+          }),
+        ],
+      });
     }
     if (commands.skip.includes(command)) {
       const queue = distube.getQueue(message);
-      if (!queue) return message.channel.send("Queue Empty!");
+      if (!queue) return message.channel.send(toEmbed("Queue Empty!", "RED"));
       if (queue.songs.length > 1) distube.skip(message);
       else distube.stop(message);
     }
     if (commands.filter.includes(command)) {
       const queue = distube.getQueue(message);
-      if (!queue) return message.channel.send("Queue Empty!");
+      if (!queue) return message.channel.send(toEmbed("Queue Empty!", "RED"));
       if (args[0] === "off" && queue.filters.length > 0) {
         queue.setFilter(false);
       } else if (Object.keys(distube.filters).includes(args[0])) {
         queue.setFilter(args[0]);
       } else if (args[0]) {
-        message.channel.send("Invalid Filter.");
+        message.channel.send(toEmbed("Invalid Filter.", "RED"));
       } else {
-        message.channel.send("Current Filters: " + queue.filters.join(", "));
+        message.channel.send({
+          embeds: [
+            new Discord.MessageEmbed({
+              title: "Active Filters",
+              description:
+                queue.filters.length > 0 ? queue.filters.join("\n") : "None.",
+            }),
+          ],
+        });
       }
     }
     if (commands.help.includes(command)) {
@@ -99,41 +126,68 @@ client
         ],
       });
     }
+    if (commands["now playing"].includes(command)) {
+      const queue = distube.getQueue(message);
+      if (!queue) return message.channel.send(toEmbed("Queue Empty!", "RED"));
+      const song = queue.songs[0];
+      message.channel.send(
+        toEmbed(
+          `Now Playing: [**${song.name}**](${song.url}) (${song.formattedDuration}) - Requested by ${song.user.tag}`
+        )
+      );
+    }
+    if (commands["list filter"].includes(command)) {
+      message.channel.send({
+        embeds: [
+          new Discord.MessageEmbed({
+            title: "Available Filters",
+            description: Object.keys(distube.filters)
+              .map((fil) => `- ${fil}`)
+              .join("\n"),
+          }),
+        ],
+      });
+    }
   });
 distube
   .on("addSong", (queue, song) => {
-    queue.textChannel.send(`Added ${song.name} to queue.`);
+    queue.textChannel.send(
+      toEmbed(`Added [**${song.name}**](${song.url}) to queue.`, "GREEN")
+    );
   })
   .on("playSong", (queue, song) => {
     queue.textChannel.send(
-      `Now Playing: **${song.name}** (${song.formattedDuration}) - Requested by ${song.user.tag}`
+      toEmbed(
+        `Started Playing: [**${song.name}**](${song.url}) (${song.formattedDuration}) - Requested by ${song.user.tag}`
+      )
     );
   })
   .on("disconnect", (queue) => {
-    queue.textChannel.send("Leaving the Voice Channel...");
+    queue.textChannel.send(toEmbed("Leaving the Voice Channel..."));
   })
   .on("searchCancel", (message) => {
-    message.channel.send("Search Canceled.");
+    message.channel.send(toEmbed("Search Canceled.", "RED"));
   })
   .on("searchNoResult", (message) => {
-    message.channel.send("Found Nothing...");
+    message.channel.send(toEmbed("Found Nothing...", "RED"));
   })
   .on("searchInvalidAnswer", (message) => {
-    message.channel.send("Invalid Answer. Search Canceled.");
+    message.channel.send(toEmbed("Invalid Answer. Search Canceled.", "RED"));
   })
   .on("searchDone", () => {})
   .on("searchResult", (message, results) => {
     message.channel.send({
       embeds: [
-        new MessageEmbed({
+        new Discord.MessageEmbed({
           title: "Search Results",
           description: results
             .map(
               (result, key) =>
-                `${key + 1}: **${result.name}** (${result.formattedDuration})`
+                `${key + 1}: [**${result.name}**](${result.url}) (${
+                  result.formattedDuration
+                })`
             )
             .join("\n"),
-          timestamp: "",
         }).setFooter(
           "Type (1-10) to choose songs, or type other texts to cancel."
         ),
@@ -141,6 +195,6 @@ distube
     });
   })
   .on("error", (channel, error) => {
-    channel.send(error.toString().slice(0, 1999));
+    channel.send(toEmbed(error.toString().slice(0, 1999), "RED"));
   });
 client.login(process.env.BOT_TOKEN);
