@@ -2,6 +2,7 @@ import Discord from "discord.js";
 import { DisTube } from "distube";
 import { SpotifyPlugin } from "@distube/spotify";
 import dotenv from "dotenv";
+import axios from "axios";
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ const commands = {
   loop: ["repeat", "loop", "l"],
   queue: ["queue", "q"],
   filter: ["filter", "f"],
+  salim: ["salim"],
   "now playing": ["nowplaying", "now", "np"],
   "list filter": ["listfilter", "lf", "fl"],
 };
@@ -147,6 +149,16 @@ client
           }),
         ],
       });
+    }
+    if (commands[salim].includes(command)) {
+      axios
+        .get("https://watasalim.vercel.app/api/quotes/random")
+        .then(({ data }) => message.channel.send(data.quote.body))
+        .catch(() =>
+          message.channel.send(
+            toEmbed("Error fetching Salim quotes :frowning:", "RED")
+          )
+        );
     }
   });
 distube
