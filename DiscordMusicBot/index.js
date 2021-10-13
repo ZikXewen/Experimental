@@ -150,7 +150,7 @@ client
         ],
       });
     }
-    if (commands[salim].includes(command)) {
+    if (commands.salim.includes(command)) {
       axios
         .get("https://watasalim.vercel.app/api/quotes/random")
         .then(({ data }) => message.channel.send(data.quote.body))
