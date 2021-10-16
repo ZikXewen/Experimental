@@ -14,7 +14,8 @@ const commands = {
   loop: ["repeat", "loop", "l"],
   queue: ["queue", "q"],
   filter: ["filter", "f"],
-  salim: ["salim"],
+  salim: ["salim", "sl"],
+  lyrics: ["lyrics", "ly"],
   "now playing": ["nowplaying", "now", "np"],
   "list filter": ["listfilter", "lf", "fl"],
 };
@@ -57,7 +58,9 @@ client
     }
     if (commands.loop.includes(command)) {
       if (!distube.getQueue(message)) {
-        return message.channel.send(toEmbed("Queue Empty!", "RED"));
+        return message.channel.send(
+          toEmbed("No songs... :slight_smile:", "RED")
+        );
       }
       const mode = distube.setRepeatMode(message);
       message.channel.send(
@@ -71,7 +74,10 @@ client
     }
     if (commands.queue.includes(command)) {
       const queue = distube.getQueue(message);
-      if (!queue) return message.channel.send(toEmbed("Queue Empty!", "RED"));
+      if (!queue)
+        return message.channel.send(
+          toEmbed("No songs... :slight_smile:", "RED")
+        );
       message.channel.send({
         embeds: [
           new Discord.MessageEmbed({
@@ -91,13 +97,19 @@ client
     }
     if (commands.skip.includes(command)) {
       const queue = distube.getQueue(message);
-      if (!queue) return message.channel.send(toEmbed("Queue Empty!", "RED"));
+      if (!queue)
+        return message.channel.send(
+          toEmbed("No songs... :slight_smile:", "RED")
+        );
       if (queue.songs.length > 1) distube.skip(message);
       else distube.stop(message);
     }
     if (commands.filter.includes(command)) {
       const queue = distube.getQueue(message);
-      if (!queue) return message.channel.send(toEmbed("Queue Empty!", "RED"));
+      if (!queue)
+        return message.channel.send(
+          toEmbed("Play some songs to apply filters.", "RED")
+        );
       if (args[0] === "off" && queue.filters.length > 0) {
         queue.setFilter(false);
       } else if (Object.keys(distube.filters).includes(args[0])) {
@@ -130,7 +142,10 @@ client
     }
     if (commands["now playing"].includes(command)) {
       const queue = distube.getQueue(message);
-      if (!queue) return message.channel.send(toEmbed("Queue Empty!", "RED"));
+      if (!queue)
+        return message.channel.send(
+          toEmbed("No song is playing... :slight_smile:", "RED")
+        );
       const song = queue.songs[0];
       message.channel.send(
         toEmbed(
@@ -150,15 +165,103 @@ client
         ],
       });
     }
-    if (commands.salim.includes(command)) {
-      axios
-        .get("https://watasalim.vercel.app/api/quotes/random")
-        .then(({ data }) => message.channel.send(data.quote.body))
-        .catch(() =>
-          message.channel.send(
-            toEmbed("Error fetching Salim quotes :frowning:", "RED")
+    if (commands.lyrics.includes(command)) {
+      const queue = distube.getQueue(message);
+      if (args[0] || queue) {
+        axios
+          .get(
+            encodeURI(
+              `https://api.musixmatch.com/ws/1.1/track.search?apikey=${
+                process.env.MM_KEY
+              }&q=${
+                args[0]
+                  ? args.join(" ").replace("/", "*")
+                  : queue.songs[0].name.replace("/", "*")
+              }&s_track_rating=desc`
+            )
+          )
+          .then(({ data }) => {
+            if (data.message.header.status_code != 200) {
+              message.channel.send(
+                `Error Searching Lyrics. Status: ${data?.message?.header?.status_code} :frowning:`
+              );
+            } else if (data.message.body.track_list[0]) {
+              message.channel.send({
+                embeds: [
+                  new Discord.MessageEmbed({
+                    title: "Lyrics Found",
+                    author: {
+                      name: "Powered by Musixmatch",
+                      url: "https://www.musixmatch.com/",
+                    },
+                    description: data.message.body.track_list
+                      .map(
+                        ({ track }, key) =>
+                          `${key + 1}: [**${track.track_name}** - ${
+                            track.artist_name
+                          }](${track.track_share_url})`
+                      )
+                      .join("\n"),
+                  }),
+                ],
+              });
+            } else {
+              message.channel.send(
+                toEmbed(
+                  args[0]
+                    ? "We couldn't find any lyrics for your query. :frowning:"
+                    : "Not found... Try searching with search terms instead."
+                )
+              );
+            }
+          });
+      } else {
+        message.channel.send(
+          toEmbed(
+            "Play some songs or enter search terms for lyrics search :slight_smile:",
+            "RED"
           )
         );
+      }
+    }
+    if (commands.salim.includes(command)) {
+      if (args[0]) {
+        axios
+          .post(
+            "https://api-inference.huggingface.co/models/tupleblog/salim-classifier",
+            {
+              inputs:
+                args.join(" ") + (args.join(" ").length < 50 ? "<pad>" : ""),
+            },
+            {
+              headers: {
+                Authorization: "Bearer " + process.env.HF_KEY,
+              },
+            }
+          )
+          .then(({ data }) => {
+            const score = data[0][1].score * 100;
+            message.channel.send(
+              `This quote is ${score.toFixed(2)}% Salim.` +
+                (score > 80 ? " :cold_face::cold_face:" : "")
+            );
+          })
+          .catch(() =>
+            message.channel.send(
+              "Error Salim classification request :frowning:",
+              "RED"
+            )
+          );
+      } else {
+        axios
+          .get("https://watasalim.vercel.app/api/quotes/random")
+          .then(({ data }) => message.channel.send(data.quote.body))
+          .catch(() =>
+            message.channel.send(
+              toEmbed("Error fetching Salim quotes :frowning:", "RED")
+            )
+          );
+      }
     }
   });
 distube
