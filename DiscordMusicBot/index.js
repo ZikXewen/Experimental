@@ -29,6 +29,7 @@ const distube = new DisTube(client, {
   leaveOnFinish: true,
   nsfw: true,
   plugins: [new SpotifyPlugin()],
+  youtubeCookie: process.env.COOKIE,
 });
 
 const toEmbed = (desc, color) => ({
@@ -70,6 +71,11 @@ client
       );
     }
     if (commands.stop.includes(command)) {
+      const queue = distube.getQueue(message);
+      if (!queue)
+        return message.channel.send(
+          toEmbed("No songs... :slight_smile:", "RED")
+        );
       distube.stop(message);
     }
     if (commands.queue.includes(command)) {
