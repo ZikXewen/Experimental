@@ -1,4 +1,7 @@
 TS/main.js
+puppeteer-test/
+puppeteer-test-target/
+
 *.gitignore
 *.env
 *node_modules/
