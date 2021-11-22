@@ -5,6 +5,7 @@ import { keyboard, Key, getActiveWindow } from "@nut-tree/nut-js";
 dotenv.config();
 
 var prefix = "fb:";
+var discordHandle;
 const commands = {
   help: ["help", "h"], // WIP
   mine: ["mine", "m"],
@@ -39,7 +40,8 @@ const checkTimeLeft = (channel, count) => {
 const mine = async (channel) => {
   if (!userTag) return; // For stopping
   const { windowHandle } = await getActiveWindow();
-  if (windowHandle === 394312) {
+  console.log(discordHandle);
+  if (windowHandle === discordHandle) {
     await typeln(";s");
     await typeln(`;up ${mode ? "p" : "b"} a`);
     timeLeft = null;
@@ -81,6 +83,7 @@ client.on("messageCreate", async (message) => {
       userTag = null;
     } else {
       userTag = message.author.tag;
+      discordHandle = (await getActiveWindow()).windowHandle;
       console.log(`Starting to mine for ${userTag}...`);
       mine(message.channel);
     }

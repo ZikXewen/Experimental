@@ -13,11 +13,11 @@ const commands = {
   skip: ["skip", "s"],
   loop: ["repeat", "loop", "l"],
   queue: ["queue", "q"],
+  "now playing": ["nowplaying", "now", "np"],
   filter: ["filter", "f"],
+  "list filter": ["listfilter", "lf", "fl"],
   salim: ["salim", "sl"],
   lyrics: ["lyrics", "ly"],
-  "now playing": ["nowplaying", "now", "np"],
-  "list filter": ["listfilter", "lf", "fl"],
 };
 const prefix = "??";
 const client = new Discord.Client({
